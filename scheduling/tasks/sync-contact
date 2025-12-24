@@ -1,0 +1,53 @@
+#!/usr/local/bin/python3
+
+import psycopg2
+import mariadb
+from dataclasses import dataclass
+
+pg_connect = psycopg2.connect(database="", user="", password="", host="", port=5432)
+pg_cursor = pg_connect.cursor()
+pg_cursor.execute("SELECT * from res_partner_audit;")
+record = pg_cursor.fetchall()
+columns = [i.name for i in pg_cursor.description]
+
+mariadb_connect = mariadb.connect(user="", password="", host="", port=3306, database="")
+mariadb_cursor = mariadb_connect.cursor()
+
+@dataclass
+class Contact:
+	external_id: int
+	first_name: str = ""
+	last_name: str = ""
+	email: str = ""
+
+	def columns(self):
+		return self.__dict__.keys()
+
+	def values(self):
+		return self.__dict__.values()
+
+for row in record:
+	record_id = row[columns.index("id")]
+	partner_id = row[columns.index("partner_id")]
+	action = row[columns.index("action")]
+	row = row[columns.index("data")]
+
+	contact = Contact(
+		external_id=partner_id
+	)
+
+	match action:
+		case "DELETE":
+			#cur.execute(f"DELETE FROM contacts WHERE external_id = {partner_id};")
+			print(f"DELETE FROM contacts WHERE external_id = {partner_id};")
+
+		case "INSERT":
+			mariadb_cursor.execute(f"INSERT INTO contacts ({", ".join(contact.columns())}) VALUES (?, ?, ?, ?)", tuple(contact.values()))
+
+		case "UPDATE":
+			mariadb_cursor.execute(f"UPDATE contacts SET {", ".join(["=".join([col, "?"]) for col in contact.columns()])} WHERE external_id = {partner_id};", tuple(contact.values()))
+			
+	pg_cursor.execute(f"DELETE FROM res_partner_audit WHERE id = {record_id}");
+	mariadb_connect.commit()
+	pg_connect.commit()
+

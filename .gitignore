@@ -1,0 +1,13 @@
+*
+!odoo
+!odoo/**
+!postgresql
+!postgresql/**
+!scheduling
+!scheduling/**
+!template
+!template/**
+!docker-compose.yml
+!.gitignore
+!Makefile
+!README.md
