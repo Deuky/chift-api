@@ -42,10 +42,10 @@ for row in record:
 			print(f"DELETE FROM contacts WHERE external_id = {partner_id};")
 
 		case "INSERT":
-			mariadb_cursor.execute(f"INSERT INTO contacts ({", ".join(contact.columns())}) VALUES (?, ?, ?, ?)", tuple(contact.values()))
+			mariadb_cursor.execute(f"INSERT INTO contact ({", ".join(contact.columns())}) VALUES (?, ?, ?, ?)", tuple(contact.values()))
 
 		case "UPDATE":
-			mariadb_cursor.execute(f"UPDATE contacts SET {", ".join(["=".join([col, "?"]) for col in contact.columns()])} WHERE external_id = {partner_id};", tuple(contact.values()))
+			mariadb_cursor.execute(f"UPDATE contact SET {", ".join(["=".join([col, "?"]) for col in contact.columns()])} WHERE external_id = {partner_id};", tuple(contact.values()))
 			
 	pg_cursor.execute(f"DELETE FROM res_partner_audit WHERE id = {record_id}");
 	mariadb_connect.commit()

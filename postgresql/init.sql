@@ -29,6 +29,6 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER res_partner_audit
 AFTER INSERT OR UPDATE OR DELETE
-ON users
+ON res_partner
 FOR EACH ROW
-EXECUTE FUNCTION users_audit_trigger();
+EXECUTE FUNCTION partner_audit_trigger();

@@ -1,1 +1,1 @@
-* * * * * /data/tasks/sync-contact partial
+* * * * * /data/tasks/sync-contact --target mariadb://user:password@host:port/dbname --source postgres://user:password@host:port/dbname

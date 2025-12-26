@@ -13,15 +13,12 @@ services:
       - ./odoo:/data
 
   postgres:
-    build: 
-      context: ./postgresql
+    image: postgres:15
     volumes:
       - postgres:/var/lib/postgresql
-      - ./postgresql:/data
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/postgresql_password
-      POSTGRES_DB: ${PG_DATABASE}
     secrets:
       - postgresql_password
 
@@ -38,6 +35,14 @@ services:
     volumes:
       - ./scheduling:/data
       - ./scheduling/cron.d/crontab:/etc/crontab
+
+  fastapi:
+    build:
+      context: ./fastapi
+    volumes:
+      - ./fastapi:/data
+    ports:
+      - 85:80
 
 volumes:
   postgres:
