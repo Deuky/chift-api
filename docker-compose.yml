@@ -1,3 +1,13 @@
+x-app-config: &app
+  depends_on:
+    mariadb:
+      condition: service_healthy
+  environment:
+    DATABASE_DSN: ${MARIADB_DSN}
+    DATABASE_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass
+  secrets:
+    - api_mariadb_root_pass
+
 services:
   odoo:
     build: 
@@ -8,30 +18,32 @@ services:
     environment:
       PASSWORD_FILE: /run/secrets/postgresql_password
       HOST: postgres
-    secrets:
-      - postgresql_password
     ports:
       - 8069:8069
+    secrets:
+      - postgresql_password
     volumes:
       - ./odoo:/data
 
   postgres:
-    image: postgres:15
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgresql_password
     healthcheck:
       test: ["CMD", "pg_isready", "-t", "5"]
       interval: 10s
       retries: 5
       start_period: 30s
       timeout: 10s
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: ${PG_USER}
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgresql_password
+    image: postgres:15
     secrets:
       - postgresql_password
+    volumes:
+      - postgres:/var/lib/postgresql/data
 
   mariadb:
+    environment:
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass
     image: mariadb
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
@@ -39,19 +51,14 @@ services:
       retries: 5
       start_period: 30s
       timeout: 10s
-    volumes:
-      - mariadb:/var/lib/mysql
-    environment:
-      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass
     secrets:
       - api_mariadb_root_pass
+    volumes:
+      - mariadb:/var/lib/mysql
 
   scheduling:
     build:
       context: ./scheduling
-    volumes:
-      - ./scheduling:/data
-      - ./scheduling/cron.d/crontab:/etc/crontab
     environment:
       POSTGRESQL_DSN: ${POSTGRESQL_DSN}
       POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql_password
@@ -60,22 +67,27 @@ services:
     secrets:
       - api_mariadb_root_pass
       - postgresql_password
+    volumes:
+      - ./scheduling:/data
+      - ./scheduling/cron.d/crontab:/etc/crontab
 
   fastapi:
+    <<: *app
     build:
       context: ./app/fastapi
-    volumes:
-      - ./app/fastapi:/data
     ports:
       - 85:80
-    depends_on:
-      mariadb:
-        condition: service_healthy
-    environment:
-      DATABASE_DSN: ${MARIADB_DSN}
-      DATABASE_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass
-    secrets:
-      - api_mariadb_root_pass
+    volumes:
+      - ./app/fastapi:/data
+
+  flask:
+    <<: *app
+    build:
+      context: ./app/flask
+    ports:
+      - 86:5000
+    volumes:
+      - ./app/flask:/data
 
 volumes:
   postgres:

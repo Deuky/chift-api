@@ -28,8 +28,8 @@ clear:
 	git clean -Xfd
 
 _secrets: $(SECRET_DIR) $(SECRET_DIR)/odoo_pg_pass $(SECRET_DIR)/api_mariadb_root_pass
-_models: app/fastapi/app/models scheduling/tasks/models
-_database: app/fastapi/app/database.py scheduling/tasks/database.py
+_models: app/fastapi/app/models scheduling/tasks/models app/flask/app/models
+_database: app/fastapi/app/database.py scheduling/tasks/database.py app/flask/app/database.py
 
 $(SECRET_DIR):
 	mkdir -v -p $@
@@ -43,10 +43,10 @@ $(SECRET_DIR)/api_mariadb_root_pass:
 waiting-mariadb:
 	@docker compose exec mariadb healthcheck.sh --connect --innodb_initialized || (sleep 2 && $(MAKE) waiting-mariadb)
 
-app/fastapi/app/models scheduling/tasks/models:
+app/fastapi/app/models scheduling/tasks/models app/flask/app/models:
 	cp -rfv app/models $@
 
-app/fastapi/app/database.py scheduling/tasks/database.py:
+app/fastapi/app/database.py scheduling/tasks/database.py app/flask/app/database.py:
 	cp -fv app/database/database.py $@
 
 .env: 
