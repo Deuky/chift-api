@@ -89,6 +89,15 @@ services:
     volumes:
       - ./app/flask:/data
 
+  django:
+    <<: *app
+    build:
+      context: ./app/django
+    ports:
+      - 88:8000
+    volumes:
+      - ./app/django:/data
+
 volumes:
   postgres:
   mariadb:

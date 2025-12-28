@@ -2,4 +2,4 @@ build:
 	pip install -r requirements.txt
 
 start:
-	flask --app app/main run --host 0.0.0.0 --debug
+	python manage.py runserver 0.0.0.0:8000

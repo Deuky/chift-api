@@ -6,7 +6,7 @@ class Database():
     def __init__(self, dsn, password_file=False, models=[]):
         if (path.isfile(password_file)):
             with open(password_file, 'r') as passfile:
-                password = passfile.read().strip();
+                password = passfile.read().strip()
                 dsnparsed = dsnparser.parse(dsn)
                 dsnparsed["password"] = password
                 dsn = f"{dsnparsed["driver"]}://{dsnparsed["user"]}:{dsnparsed["password"]}@{dsnparsed["host"]}:{dsnparsed["port"]}/{dsnparsed["database"]}"
