@@ -1,53 +1,53 @@
 #!/usr/local/bin/python3
 
-import psycopg2
-import mariadb
-from dataclasses import dataclass
+from database import Database
+import models
+import os
 
-pg_connect = psycopg2.connect(database="", user="", password="", host="", port=5432)
-pg_cursor = pg_connect.cursor()
-pg_cursor.execute("SELECT * from res_partner_audit;")
-record = pg_cursor.fetchall()
-columns = [i.name for i in pg_cursor.description]
+dsn_pg = os.getenv("POSTGRESQL_DSN")
+pg_password_file = os.getenv("POSTGRESQL_PASSWORD_FILE")
+dsn_mariadb = os.getenv("MARIADB_DSN")
+mariadb_password_file = os.getenv("MARIADB_PASSWORD_FILE")
 
-mariadb_connect = mariadb.connect(user="", password="", host="", port=3306, database="")
-mariadb_cursor = mariadb_connect.cursor()
+with Database(dsn_pg, pg_password_file) as pg, Database(dsn_mariadb, mariadb_password_file) as mariadb:
+    def apply_action(action, model, old=None) -> bool:
+        class_model = model.__class__
 
-@dataclass
-class Contact:
-	external_id: int
-	first_name: str = ""
-	last_name: str = ""
-	email: str = ""
+        if (old == None):
+            old = mariadb.exec(mariadb.select(class_model).where(class_model.external_id == model.external_id)).first()
 
-	def columns(self):
-		return self.__dict__.keys()
+        match action:
+            case "DELETE":
+                if (old):
+                    mariadb.delete(old, commit=True)
 
-	def values(self):
-		return self.__dict__.values()
+            case "INSERT":
+                if (old):
+                    print(f"{class_model.__name__} already exist. Forward to UPDATE.")
+                    apply_action("UPDATE", model, old)
+                else:
+                    mariadb.insert(model, commit=True)
 
-for row in record:
-	record_id = row[columns.index("id")]
-	partner_id = row[columns.index("partner_id")]
-	action = row[columns.index("action")]
-	row = row[columns.index("data")]
+            case "UPDATE":
+                if (old != model):
+                    if (old):
+                        old.update(model)
+                        mariadb.add(old, commit=True)
+                    else:
+                        print(f"{class_model.__name__} not exist. Forward to INSERT.")
+                        apply_action("INSERT", model, False)
+                else:
+                    print(f"Both items are same: {old} -> {model}")
 
-	contact = Contact(
-		external_id=partner_id
-	)
+    pg_statement = pg.select(models.ResPartnerAudit)
+    result = pg.exec(pg_statement)
 
-	match action:
-		case "DELETE":
-			#cur.execute(f"DELETE FROM contacts WHERE external_id = {partner_id};")
-			print(f"DELETE FROM contacts WHERE external_id = {partner_id};")
+    for row in result:
+        contact = models.Contact(
+            external_id=row.partner_id,
+            name=row.data["name"],
+            email=row.data["email"]
+        )
 
-		case "INSERT":
-			mariadb_cursor.execute(f"INSERT INTO contact ({", ".join(contact.columns())}) VALUES (?, ?, ?, ?)", tuple(contact.values()))
-
-		case "UPDATE":
-			mariadb_cursor.execute(f"UPDATE contact SET {", ".join(["=".join([col, "?"]) for col in contact.columns()])} WHERE external_id = {partner_id};", tuple(contact.values()))
-			
-	pg_cursor.execute(f"DELETE FROM res_partner_audit WHERE id = {record_id}");
-	mariadb_connect.commit()
-	pg_connect.commit()
-
+        apply_action(row.action, contact)
+        pg.delete(row, commit=False)

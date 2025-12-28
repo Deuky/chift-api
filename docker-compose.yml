@@ -15,7 +15,7 @@ services:
   postgres:
     image: postgres:15
     volumes:
-      - postgres:/var/lib/postgresql
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/postgresql_password
@@ -24,6 +24,8 @@ services:
 
   mariadb:
     image: mariadb
+    volumes:
+      - mariadb:/var/lib/mysql
     environment:
       MARIADB_ROOT_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass
     secrets:
@@ -35,17 +37,35 @@ services:
     volumes:
       - ./scheduling:/data
       - ./scheduling/cron.d/crontab:/etc/crontab
+      - ./app/database/database.py:/data/tasks/database.py
+      - ./app/models:/data/tasks/models
+    environment:
+      POSTGRESQL_DSN: ${POSTGRESQL_DSN}
+      POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql_password
+      MARIADB_DSN: ${MARIADB_DSN}
+      MARIADB_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass
+    secrets:
+      - api_mariadb_root_pass
+      - postgresql_password
 
   fastapi:
     build:
-      context: ./fastapi
+      context: ./app/fastapi
     volumes:
-      - ./fastapi:/data
+      - ./app/fastapi:/data
+      - ./app/models:/data/app/models
+      - ./app/database/database.py:/data/app/database.py
     ports:
       - 85:80
+    environment:
+      DATABASE_DSN: ${MARIADB_DSN}
+      DATABASE_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass
+    secrets:
+      - api_mariadb_root_pass
 
 volumes:
   postgres:
+  mariadb:
 
 secrets:
   postgresql_password:

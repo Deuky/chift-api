@@ -2,14 +2,14 @@
 
 !odoo
 !odoo/**
+!app
+!app/**
 !postgresql
 !postgresql/**
 !mariadb
 !mariadb/**
 !scheduling
 !scheduling/**
-!fastapi
-!fastapi/**
 !template
 !template/**
 !docker-compose.yml
@@ -17,4 +17,8 @@
 !Makefile
 !README.md
 
+scheduling/**/models
+scheduling/**/database.py
+app/fastapi/**/models
+app/fastapi/**/database.py
 __pycache__

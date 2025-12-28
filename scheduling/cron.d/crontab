@@ -1,1 +1,1 @@
-* * * * * /data/tasks/sync-contact --target mariadb://user:password@host:port/dbname --source postgres://user:password@host:port/dbname
+* * * * * /data/tasks/sync-contact --target ${MARIADB_DSN} --source ${POSTGRESQL_DSN}

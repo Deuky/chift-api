@@ -4,10 +4,10 @@ MARIADB_PASSWORD=$(shell cat secrets/api_mariadb_root_pass)
 
 configure: .env 
 
-build:
+build: _models _database
 	docker compose build
 
-install: $(SECRET_DIR)/odoo_pg_pass $(SECRET_DIR)/api_mariadb_root_pass
+install: _secrets
 	docker compose up -d postgres mariadb
 	$(MAKE) waiting-mariadb
 	docker compose exec postgres pg_isready -t 10
@@ -19,9 +19,16 @@ install: $(SECRET_DIR)/odoo_pg_pass $(SECRET_DIR)/api_mariadb_root_pass
 start:
 	docker compose up -d
 
+clear:
+	rm -rf $(ALL)
+
 .env: 
 	cp -v $(TEMPLATE_DIR)/$@ .
 	vim $@
+
+_secrets: $(SECRET_DIR)/odoo_pg_pass $(SECRET_DIR)/api_mariadb_root_pass
+_models: app/fastapi/app/models scheduling/tasks/models
+_database: app/fastapi/app/database.py scheduling/tasks/database.py
 
 $(SECRET_DIR):
 	mkdir -v -p $@
@@ -34,3 +41,10 @@ $(SECRET_DIR)/api_mariadb_root_pass: $(SECRET_DIR)
 
 waiting-mariadb:
 	@docker compose exec mariadb mariadb-admin -p'$(MARIADB_PASSWORD)' status || (sleep 2 && $(MAKE) waiting-mariadb)
+
+app/fastapi/app/models scheduling/tasks/models:
+	cp -rfv app/models $@
+
+app/fastapi/app/database.py scheduling/tasks/database.py:
+	cp -fv app/database/database.py $@
+

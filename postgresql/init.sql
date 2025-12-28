@@ -9,12 +9,7 @@ CREATE TABLE res_partner_audit (
 CREATE OR REPLACE FUNCTION partner_audit_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT' THEN
-        INSERT INTO res_partner_audit (partner_id, action, data)
-        VALUES (NEW.id, TG_OP, to_jsonb(NEW));
-        RETURN NEW;
-
-    ELSIF TG_OP = 'UPDATE' THEN
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
         INSERT INTO res_partner_audit (partner_id, action, data)
         VALUES (NEW.id, TG_OP, to_jsonb(NEW));
         RETURN NEW;
