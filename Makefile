@@ -19,24 +19,21 @@ install: _secrets
 start:
 	docker compose up -d
 
-clear:
-	rm -rf $(ALL)
-
 .env: 
 	cp -v $(TEMPLATE_DIR)/$@ .
 	vim $@
 
-_secrets: $(SECRET_DIR)/odoo_pg_pass $(SECRET_DIR)/api_mariadb_root_pass
+_secrets: $(SECRET_DIR) $(SECRET_DIR)/odoo_pg_pass $(SECRET_DIR)/api_mariadb_root_pass
 _models: app/fastapi/app/models scheduling/tasks/models
 _database: app/fastapi/app/database.py scheduling/tasks/database.py
 
 $(SECRET_DIR):
 	mkdir -v -p $@
 
-$(SECRET_DIR)/odoo_pg_pass: $(SECRET_DIR)
+$(SECRET_DIR)/odoo_pg_pass: 
 	read -p "DB Postgres Password : " pass && (echo $${pass} > $@)
 
-$(SECRET_DIR)/api_mariadb_root_pass: $(SECRET_DIR)
+$(SECRET_DIR)/api_mariadb_root_pass: 
 	read -p "DB MariaDB Password : " pass && (echo $${pass} > $@)
 
 waiting-mariadb:

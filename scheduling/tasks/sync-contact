@@ -50,4 +50,4 @@ with Database(dsn_pg, pg_password_file) as pg, Database(dsn_mariadb, mariadb_pas
         )
 
         apply_action(row.action, contact)
-        pg.delete(row, commit=False)
+        pg.delete(row, commit=True)

@@ -8,7 +8,7 @@ class Contact(SQLModel, table=True):
     email: str
 
     def __eq__(self, other):
-        if (not other):
+        if (not isinstance(other, Contact)):
             return False
 
         for key, value in self:

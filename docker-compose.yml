@@ -37,8 +37,6 @@ services:
     volumes:
       - ./scheduling:/data
       - ./scheduling/cron.d/crontab:/etc/crontab
-      - ./app/database/database.py:/data/tasks/database.py
-      - ./app/models:/data/tasks/models
     environment:
       POSTGRESQL_DSN: ${POSTGRESQL_DSN}
       POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql_password
@@ -53,8 +51,6 @@ services:
       context: ./app/fastapi
     volumes:
       - ./app/fastapi:/data
-      - ./app/models:/data/app/models
-      - ./app/database/database.py:/data/app/database.py
     ports:
       - 85:80
     environment:
