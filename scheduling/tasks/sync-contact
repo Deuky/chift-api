@@ -9,7 +9,7 @@ pg_password_file = os.getenv("POSTGRESQL_PASSWORD_FILE")
 dsn_mariadb = os.getenv("MARIADB_DSN")
 mariadb_password_file = os.getenv("MARIADB_PASSWORD_FILE")
 
-with Database(dsn_pg, pg_password_file) as pg, Database(dsn_mariadb, mariadb_password_file) as mariadb:
+with Database(dsn_pg, pg_password_file, [models.ResPartnerAudit]) as pg, Database(dsn_mariadb, mariadb_password_file, [models.Contact]) as mariadb:
     def apply_action(action, model, old=None) -> bool:
         class_model = model.__class__
 

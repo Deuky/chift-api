@@ -15,6 +15,7 @@ class Database():
 
     def __enter__(self):
         self.engine = sqlmodel.create_engine(self.dsn)
+        sqlmodel.SQLModel.metadata.create_all(self.engine)
         self.session = sqlmodel.Session(self.engine)
         return self
 

@@ -6,6 +6,7 @@ install:
 	crontab /etc/crontab
 
 start:
+	env | grep -e DSN -e "PASSWORD_FILE" > /etc/environment
 	cron
 
 force-stop:

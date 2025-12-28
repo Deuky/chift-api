@@ -2,6 +2,9 @@ services:
   odoo:
     build: 
       context: ./odoo
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       PASSWORD_FILE: /run/secrets/postgresql_password
       HOST: postgres
@@ -14,6 +17,12 @@ services:
 
   postgres:
     image: postgres:15
+    healthcheck:
+      test: ["CMD", "pg_isready", "-t", "5"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
@@ -24,6 +33,12 @@ services:
 
   mariadb:
     image: mariadb
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - mariadb:/var/lib/mysql
     environment:
@@ -53,6 +68,9 @@ services:
       - ./app/fastapi:/data
     ports:
       - 85:80
+    depends_on:
+      mariadb:
+        condition: service_healthy
     environment:
       DATABASE_DSN: ${MARIADB_DSN}
       DATABASE_PASSWORD_FILE: /run/secrets/api_mariadb_root_pass

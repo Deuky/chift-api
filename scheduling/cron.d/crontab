@@ -1,1 +1,1 @@
-* * * * * /data/tasks/sync-contact --target ${MARIADB_DSN} --source ${POSTGRESQL_DSN}
+* * * * * /data/tasks/sync-contact
