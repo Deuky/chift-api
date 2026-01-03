@@ -98,6 +98,14 @@ services:
     volumes:
       - ./app/django:/data
 
+  dotnet:
+    <<: *app  
+    build: 
+      context: ./app/.NET
+      target: prod
+    ports:
+      - 89:8080
+
 volumes:
   postgres:
   mariadb:
