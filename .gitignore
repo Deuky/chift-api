@@ -16,6 +16,8 @@
 !.gitignore
 !Makefile
 !README.md
+!.github
+!.github/**
 
 scheduling/**/models
 scheduling/**/database.py

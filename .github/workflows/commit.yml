@@ -1,0 +1,22 @@
+name: Commit Pipeline
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  build:
+    name: Build & Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: |
+          echo "VERSION=$(date "+%Y%m%d.%H%M%S").${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: docker --version
