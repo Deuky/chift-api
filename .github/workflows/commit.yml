@@ -19,4 +19,6 @@ jobs:
           echo "VERSION=$(date "+%Y%m%d.%H%M%S").${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Install dependencies
-        run: docker --version
+        run: |
+          docker compose config
+          ls -lat
