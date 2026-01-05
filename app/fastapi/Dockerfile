@@ -9,5 +9,5 @@ FROM base AS build
 FROM scratch AS artifact
 COPY . /artifact
 
-FROM base AS prod
+FROM base AS unit
 COPY --from=artifact /artifact /data
