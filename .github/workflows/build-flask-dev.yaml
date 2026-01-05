@@ -49,5 +49,5 @@ jobs:
           file: ./app/flask/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.REF_NAME }}-${{ env.VERSION }}
+            ghcr.io/${{ env.GHCR_REPOSITORY }}/${{ env.REF_NAME }}:${{ env.VERSION }}
 
