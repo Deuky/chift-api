@@ -1,4 +1,4 @@
-name: Build Base Flask
+name: Build Flask Dev
 
 on:
   push:
@@ -12,7 +12,6 @@ jobs:
   build:
     name: Build & Package
     runs-on: ubuntu-latest
-    environment: flask - dev
     permissions:
       contents: read
       packages: write
