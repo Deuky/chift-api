@@ -31,7 +31,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image Flask
         uses: docker/build-push-action@v5
         with:
           context: ./app/flask
@@ -39,4 +39,24 @@ jobs:
           file: ./app/flask/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.VERSION }}
+            ghcr.io/${{ env.GHCR_REPOSITORY }}-flask:${{ env.VERSION }}
+
+      - name: Build and push Docker image Django
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app/django
+          target: prod
+          file: ./app/django/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ env.GHCR_REPOSITORY }}-django:${{ env.VERSION }}
+
+      - name: Build and push Docker image FastAPI
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app/fastapi
+          target: prod
+          file: ./app/fastapi/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ env.GHCR_REPOSITORY }}-fastapi:${{ env.VERSION }}
