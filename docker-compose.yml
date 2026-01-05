@@ -83,7 +83,7 @@ services:
     <<: *app
     build:
       context: ./app/flask
-      target: prod
+      target: unit
     ports:
       - 86:5000
 

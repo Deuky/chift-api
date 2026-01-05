@@ -1,3 +1,5 @@
+ARG PROD_BASE=base
+
 FROM python AS base
 WORKDIR /data
 COPY Makefile requirements.txt /data
@@ -10,5 +12,5 @@ COPY . .
 FROM scratch AS artifact
 COPY --from=build /data /artifact
 
-FROM base AS prod
+FROM $PROD_BASE AS prod
 COPY --from=artifact /artifact /data
