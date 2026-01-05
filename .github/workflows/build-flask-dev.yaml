@@ -45,7 +45,7 @@ jobs:
           context: ./app/flask
           build-args: |
             BASE_REF=${{ vars.BASE_REF }}
-          target: prod
+          target: unit
           file: ./app/flask/Dockerfile
           push: true
           tags: |
