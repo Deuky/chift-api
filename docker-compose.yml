@@ -75,28 +75,26 @@ services:
     <<: *app
     build:
       context: ./app/fastapi
+      target: prod
     ports:
       - 85:80
-    volumes:
-      - ./app/fastapi:/data
 
   flask:
     <<: *app
     build:
       context: ./app/flask
+      target: prod
     ports:
       - 86:5000
-    volumes:
-      - ./app/flask:/data
 
   django:
     <<: *app
+    image: chift-django:prod
     build:
       context: ./app/django
+      target: prod
     ports:
       - 88:8000
-    volumes:
-      - ./app/django:/data
 
   dotnet:
     <<: *app  

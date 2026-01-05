@@ -17,8 +17,16 @@ jobs:
       - name: Set up environment
         run: |
           echo "VERSION=$(date "+%Y%m%d.%H%M%S").${GITHUB_SHA::7}" >> $GITHUB_ENV
+          make _models;
+          make _databases;
 
-      - name: Install dependencies
-        run: |
-          docker compose config
-          ls -lat
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: prod
+          file: ./app/flask/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ env.VERSION }}
+            ghcr.io/${{ github.repository }}:latest
