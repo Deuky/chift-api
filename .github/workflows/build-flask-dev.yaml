@@ -9,12 +9,10 @@ on:
       - .github/workflows/build-flask.yaml
 
 jobs:
-  deploy:
-    environment: flask - dev
-
   build:
     name: Build & Package
     runs-on: ubuntu-latest
+    environment: flask - dev
     permissions:
       contents: read
       packages: write
