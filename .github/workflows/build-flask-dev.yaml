@@ -6,7 +6,7 @@ on:
       - "**"
     paths:
       - app/flask/app/**
-      - .github/workflows/build-flask.yaml
+      - .github/workflows/build-flask-dev.yaml
 
 jobs:
   build:
