@@ -1,0 +1,16 @@
+*
+!.NET
+!database
+!django
+!fastapi
+!fastapi/**
+!models
+!flask
+!models
+!.gitignore
+
+fastapi/**/models
+fastapi/**/database.py
+flask/**/models
+flask/**/database.py
+__pycache__

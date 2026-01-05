@@ -4,6 +4,7 @@
 !odoo/**
 !app
 !app/**
+!app/.gitignore
 !postgresql
 !postgresql/**
 !mariadb
@@ -21,6 +22,4 @@
 
 scheduling/**/models
 scheduling/**/database.py
-app/fastapi/**/models
-app/fastapi/**/database.py
 __pycache__
