@@ -28,7 +28,7 @@ jobs:
           echo "GHCR_REPOSITORY=deuky/chift-api-flask" >> $GITHUB_ENV
           make _models;
           make _database;
-          echo ${{ env.BASE_REF }};
+          echo ${{ vars.BASE_REF }};
           env
           exit 1;
 
