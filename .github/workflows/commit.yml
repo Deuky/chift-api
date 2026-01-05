@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "VERSION=$(date "+%Y%m%d.%H%M%S").${GITHUB_SHA::7}" >> $GITHUB_ENV
           make _models;
-          make _databases;
+          make _database;
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
