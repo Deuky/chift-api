@@ -6,8 +6,12 @@ on:
       - "**"
     paths:
       - app/flask/app/**
+      - .github/workflows/build-flask.yaml
 
 jobs:
+  deploy:
+    environment: flask - dev
+
   build:
     name: Build & Package
     runs-on: ubuntu-latest
