@@ -8,6 +8,7 @@ on:
       - app/flask/Dockerfile
       - app/flask/requirements.txt
       - app/flask/Makefile
+      - .github/workflows/build-base-flask.yml
 
 jobs:
   build:
@@ -42,3 +43,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.VERSION }}
+            ghcr.io/${{ env.GHCR_REPOSITORY }}:latest
