@@ -18,8 +18,6 @@ services:
     environment:
       PASSWORD_FILE: /run/secrets/postgresql_password
       HOST: postgres
-    ports:
-      - 8069:8069
     secrets:
       - postgresql_password
     volumes:
@@ -73,36 +71,31 @@ services:
 
   fastapi:
     <<: *app
+    image: ghcr.io/deuky/chift-api/fastapi/main:latest
     build:
       context: ./app/fastapi
-      target: prod
-    ports:
-      - 85:80
+      target: unit
 
   flask:
     <<: *app
+    image: ghcr.io/deuky/chift-api/flask/main:latest
     build:
       context: ./app/flask
       target: unit
-    ports:
-      - 86:5000
 
   django:
     <<: *app
-    image: chift-django:prod
+    image: ghcr.io/deuky/chift-api/django/main:latest
     build:
       context: ./app/django
-      target: prod
-    ports:
-      - 88:8000
+      target: unit
 
   dotnet:
     <<: *app  
+    image: ghcr.io/deuky/chift-api/dotnet/main:latest
     build: 
       context: ./app/.NET
-      target: prod
-    ports:
-      - 89:8080
+      target: base
 
 volumes:
   postgres:
