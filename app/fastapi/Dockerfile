@@ -1,3 +1,5 @@
+ARG BASE_REF=base
+
 FROM python AS base
 WORKDIR /data
 COPY Makefile requirements.txt /data
@@ -9,5 +11,5 @@ FROM base AS build
 FROM scratch AS artifact
 COPY . /artifact
 
-FROM base AS unit
+FROM ${BASE_REF} AS unit
 COPY --from=artifact /artifact /data
