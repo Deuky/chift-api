@@ -3,11 +3,12 @@ build:
 
 install:
 	touch /var/log/cron.log
-	crontab /etc/crontab
 
 start:
+	crontab /etc/crontab
 	env | grep -e DSN -e "PASSWORD_FILE" > /etc/environment
 	cron
+	crontab /etc/crontab
 
 force-stop:
 	killall cron;
