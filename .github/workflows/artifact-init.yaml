@@ -11,7 +11,7 @@ on:
       - docker-compose.yml
       - Makefile
       - .github/workflows/artifact-init.yaml
-
+  workflow_dispatch:
 
 jobs:
   build:
