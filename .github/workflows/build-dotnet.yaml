@@ -1,14 +1,12 @@
-name: Build Base .NET
+name: Build .NET
 
 on:
   push:
     branches:
       - "**"
     paths:
-      - app/.NET/Dockerfile
-      - app/.NET/requirements.txt
-      - app/.NET/Makefile
-      - .github/workflows/build-dotnet-base.yml
+      - app/.NET/**
+      - .github/workflows/build-dotnet.yml
 
 jobs:
   build:
@@ -25,7 +23,7 @@ jobs:
       - name: Set up environment
         run: |
           echo "VERSION=$(date "+%Y%m%d.%H%M%S").${GITHUB_SHA::7}" >> $GITHUB_ENV
-          echo "GHCR_REPOSITORY=deuky/chift-api/dotnet/base" >> $GITHUB_ENV
+          echo "GHCR_REPOSITORY=deuky/chift-api/dotnet/${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
