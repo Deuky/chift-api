@@ -1,12 +1,12 @@
-name: Build Flask
+name: Build Scheduling Dev
 
 on:
   push:
     branches:
       - "**"
     paths:
-      - app/flask/**
-      - .github/workflows/build-flask.yaml
+      - scheduling/**
+      - .github/workflows/build-scheduling.yaml
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
       - name: Set up environment
         run: |
           echo "VERSION=$(date "+%Y%m%d.%H%M%S").${GITHUB_SHA::7}" >> $GITHUB_ENV
-          echo "GHCR_REPOSITORY=deuky/chift-api/flask/${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "GHCR_REPOSITORY=deuky/chift-api/scheduling/${{ github.ref_name }}" >> $GITHUB_ENV
           make _models;
           make _database;
 
@@ -37,9 +37,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./app/flask
+          context: ./app/scheduling
           target: base
-          file: ./app/flask/Dockerfile
+          file: ./app/scheduling/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.VERSION }}
