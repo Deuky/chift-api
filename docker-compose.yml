@@ -67,6 +67,25 @@ services:
     volumes:
       - ./scheduling/cron.d/crontab:/etc/crontab
 
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/htpasswd:/etc/nginx/htpasswd
+    ports:
+      - 85:80
+    depends_on:
+      fastapi:
+        condition: service_started
+      odoo:
+        condition: service_started
+      django:
+        condition: service_started
+      dotnet:
+        condition: service_started
+      flask:
+        condition: service_started
+
   fastapi:
     <<: *app
     image: ghcr.io/deuky/chift-api/fastapi/${BRANCH:-main}:latest
@@ -78,6 +97,8 @@ services:
   django:
     <<: *app
     image: ghcr.io/deuky/chift-api/django/${BRANCH:-main}:latest
+    ports:
+      - 86:8000
 
   dotnet:
     <<: *app  

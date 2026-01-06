@@ -55,6 +55,8 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH }}
           script: |
             cd /media/chift-api
+            mkdir -p nginx
+            htpasswd -b -c nginx/htpasswd admin password
             echo "${{ vars.ENV_FILE }}" | tr -d $'\r' > .env
             echo "${{ vars.SCHEDULING_RULES }}" | tr -d $'\r' > ./scheduling/cron.d/crontab
             source .env
