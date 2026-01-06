@@ -46,16 +46,19 @@ jobs:
           source: ./
           target: /media/chift-api
 
-      - name: Deploy via SSH
+      - name: Deploy & Install via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: chift-api.gustin.page
           username: root
           key: ${{ secrets.DEPLOY_SSH }}
           script: |
+            docker logout
+            docker login ghcr.io -u deuky -p ${{ secrets.ACCESS_TOKEN }}
             cd /media/chift-api
             echo "${{ vars.ENV_FILE }}" | tr -d $'\r' > .env
             source .env
             mkdir ${SECRET_DIR}
             echo "${{ secrets.API_MARIADB_ROOT_PASS }}" > ${SECRET_DIR}/api_mariadb_root_pass
             echo "${{ secrets.ODOO_PG_PASS }}" > ${SECRET_DIR}/odoo_pg_pass
+            make install
