@@ -33,3 +33,20 @@ jobs:
             docker-compose.yml
             Makefile
             .github/workflows/artifact-init.yaml
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-package
+
+      - name: test
+        run: |
+          echo "ok";
+          ls -alt
