@@ -72,30 +72,18 @@ services:
   fastapi:
     <<: *app
     image: ghcr.io/deuky/chift-api/fastapi/main:latest
-    build:
-      context: ./app/fastapi
-      target: unit
 
   flask:
     <<: *app
     image: ghcr.io/deuky/chift-api/flask/main:latest
-    build:
-      context: ./app/flask
-      target: unit
 
   django:
     <<: *app
     image: ghcr.io/deuky/chift-api/django/main:latest
-    build:
-      context: ./app/django
-      target: unit
 
   dotnet:
     <<: *app  
     image: ghcr.io/deuky/chift-api/dotnet/main:latest
-    build: 
-      context: ./app/.NET
-      target: base
 
 volumes:
   postgres:
