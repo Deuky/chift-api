@@ -55,8 +55,7 @@ services:
       - mariadb:/var/lib/mysql
 
   scheduling:
-    build:
-      context: ./scheduling
+    image: ghcr.io/deuky/chift-api/scheduling/${BRANCH:-main}:latest
     environment:
       POSTGRESQL_DSN: ${POSTGRESQL_DSN}
       POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql_password
@@ -66,24 +65,23 @@ services:
       - api_mariadb_root_pass
       - postgresql_password
     volumes:
-      - ./scheduling:/data
       - ./scheduling/cron.d/crontab:/etc/crontab
 
   fastapi:
     <<: *app
-    image: ghcr.io/deuky/chift-api/fastapi/main:latest
+    image: ghcr.io/deuky/chift-api/fastapi/${BRANCH:-main}:latest
 
   flask:
     <<: *app
-    image: ghcr.io/deuky/chift-api/flask/main:latest
+    image: ghcr.io/deuky/chift-api/flask/${BRANCH:-main}:latest
 
   django:
     <<: *app
-    image: ghcr.io/deuky/chift-api/django/main:latest
+    image: ghcr.io/deuky/chift-api/django/${BRANCH:-main}:latest
 
   dotnet:
     <<: *app  
-    image: ghcr.io/deuky/chift-api/dotnet/main:latest
+    image: ghcr.io/deuky/chift-api/dotnet/${BRANCH:-main}:latest
 
 volumes:
   postgres:
