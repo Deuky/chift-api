@@ -2,14 +2,6 @@ name: Deploy Infra
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Target environment"
-        required: true
-        default: "private"
-        type: choice
-        options:
-          - private
 
 jobs:
   build:
