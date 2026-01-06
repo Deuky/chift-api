@@ -1,4 +1,4 @@
-ARG PROD_BASE=base
+ARG BASE_REF=base
 
 FROM python AS base
 WORKDIR /data
@@ -7,10 +7,9 @@ RUN make -C /data build
 CMD ["make", "start"]
 
 FROM base AS build
-COPY . .
 
 FROM scratch AS artifact
-COPY --from=build /data /artifact
+COPY . /artifact
 
-FROM $PROD_BASE AS prod
+FROM ${BASE_REF} AS unit
 COPY --from=artifact /artifact /data
