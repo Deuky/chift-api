@@ -37,6 +37,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
+    environment: "gustin.page"
 
     steps:
       - name: Download artifact
@@ -45,6 +46,11 @@ jobs:
           name: app-package
 
       - name: Deploy via SSH
-        run: |
-          ls -lat
-          echo "ok";
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: chift-api.gustin.page
+          username: root
+          key: ${{ secrets.DEPLOY_SSH }}
+          script: |
+            cd /media/chift-api
+            ls -lat
