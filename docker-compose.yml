@@ -18,8 +18,6 @@ services:
     environment:
       PASSWORD_FILE: /run/secrets/postgresql_password
       HOST: postgres
-    ports:
-      - 8069:8069
     secrets:
       - postgresql_password
     volumes:
@@ -57,8 +55,7 @@ services:
       - mariadb:/var/lib/mysql
 
   scheduling:
-    build:
-      context: ./scheduling
+    image: ghcr.io/deuky/chift-api/scheduling/${BRANCH:-main}:latest
     environment:
       POSTGRESQL_DSN: ${POSTGRESQL_DSN}
       POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql_password
@@ -68,43 +65,44 @@ services:
       - api_mariadb_root_pass
       - postgresql_password
     volumes:
-      - ./scheduling:/data
       - ./scheduling/cron.d/crontab:/etc/crontab
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/htpasswd:/etc/nginx/htpasswd
+    ports:
+      - 85:80
+    depends_on:
+      fastapi:
+        condition: service_started
+      odoo:
+        condition: service_started
+      django:
+        condition: service_started
+      dotnet:
+        condition: service_started
+      flask:
+        condition: service_started
 
   fastapi:
     <<: *app
-    build:
-      context: ./app/fastapi
-    ports:
-      - 85:80
-    volumes:
-      - ./app/fastapi:/data
+    image: ghcr.io/deuky/chift-api/fastapi/${BRANCH:-main}:latest
 
   flask:
     <<: *app
-    build:
-      context: ./app/flask
-    ports:
-      - 86:5000
-    volumes:
-      - ./app/flask:/data
+    image: ghcr.io/deuky/chift-api/flask/${BRANCH:-main}:latest
 
   django:
     <<: *app
-    build:
-      context: ./app/django
+    image: ghcr.io/deuky/chift-api/django/${BRANCH:-main}:latest
     ports:
-      - 88:8000
-    volumes:
-      - ./app/django:/data
+      - 86:8000
 
   dotnet:
     <<: *app  
-    build: 
-      context: ./app/.NET
-      target: prod
-    ports:
-      - 89:8080
+    image: ghcr.io/deuky/chift-api/dotnet/${BRANCH:-main}:latest
 
 volumes:
   postgres:

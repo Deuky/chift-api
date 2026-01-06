@@ -4,6 +4,7 @@
 !odoo/**
 !app
 !app/**
+!app/.gitignore
 !postgresql
 !postgresql/**
 !mariadb
@@ -12,13 +13,16 @@
 !scheduling/**
 !template
 !template/**
+!nginx
+!nginx/**
 !docker-compose.yml
 !.gitignore
 !Makefile
 !README.md
+!.github
+!.github/**
 
 scheduling/**/models
 scheduling/**/database.py
-app/fastapi/**/models
-app/fastapi/**/database.py
 __pycache__
+nginx/htpasswd

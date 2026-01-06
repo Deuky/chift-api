@@ -1,8 +1,11 @@
-FROM python
+FROM python AS base
 ENV TZ=Europe/Brussels
-RUN apt-get update && apt-get install -y cron pip make
 WORKDIR /data
+
+RUN apt-get update && apt-get install -y cron
 COPY requirements.txt Makefile .
-RUN make build
+RUN make -C /data build
+COPY . .
+RUN make -C /data install
 COPY entrypoint.sh /
 CMD ["/entrypoint.sh"]
