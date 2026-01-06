@@ -37,9 +37,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./app/scheduling
+          context: ./scheduling
           target: base
-          file: ./app/scheduling/Dockerfile
+          file: ./scheduling/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.VERSION }}
