@@ -1,6 +1,9 @@
 name: Build Infra Artefact
 
 on:
+  push:
+    branches:
+      - "**"
   workflow_dispatch:
 
 
@@ -9,18 +12,9 @@ jobs:
     name: Build & Package
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: chift-api-package
-          path: |
-            ./postgresql
-            ./odoo
-            ./mariadb
-            ./docker-compose.yml
-            ./Makefile
+        run: |
+          echo "ok";
