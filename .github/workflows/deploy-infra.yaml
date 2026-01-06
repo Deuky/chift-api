@@ -37,6 +37,15 @@ jobs:
         with:
           name: app-package
 
+      - name: Upload artifact to server (SCP)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: chift-api.gustin.page
+          username: root
+          key: ${{ secrets.DEPLOY_SSH }}
+          source: *
+          target: /media/chift-api
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
