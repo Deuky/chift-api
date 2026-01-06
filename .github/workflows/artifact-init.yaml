@@ -16,20 +16,11 @@ on:
       environment:
         description: "Target environment"
         required: true
-        default: "dev"
+        default: "private"
         type: choice
         options:
-          - dev
-          - staging
-          - prod
-      deploy:
-        description: "Run deployment step"
-        required: true
-        default: "false"
-        type: choice
-        options:
-          - "true"
-          - "false"
+          - private
+
 jobs:
   build:
     name: Build & Package
@@ -55,8 +46,7 @@ jobs:
     name: Deploy (manual only)
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && inputs.deploy == 'true'
-    environment: ${{ inputs.environment }}
+    if: github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Download artifact
@@ -65,14 +55,6 @@ jobs:
           name: app-package
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            mkdir -p /var/www/app/releases/${{ env.VERSION }}
-            cd /var/www/app/releases/${{ env.VERSION }}
-            tar -xzf app-${{ env.VERSION }}.tar.gz
-            ln -sfn /var/www/app/releases/${{ env.VERSION }} /var/www/app/current
-            systemctl restart app.service
+        run: |
+          ls -lat
+          echo "ok";
