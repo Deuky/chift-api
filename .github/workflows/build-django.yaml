@@ -1,18 +1,17 @@
-name: Build FastAPI Dev
+name: Build Django Dev
 
 on:
   push:
     branches:
       - "**"
     paths:
-      - app/fastapi/app/**
-      - .github/workflows/build-fastapi-dev.yaml
+      - app/django/**
+      - .github/workflows/build-django.yaml
 
 jobs:
   build:
     name: Build & Package
     runs-on: ubuntu-latest
-    environment: "fastapi - dev"
     permissions:
       contents: read
       packages: write
@@ -24,9 +23,7 @@ jobs:
       - name: Set up environment
         run: |
           echo "VERSION=$(date "+%Y%m%d.%H%M%S").${GITHUB_SHA::7}" >> $GITHUB_ENV
-          echo "GHCR_REPOSITORY=deuky/chift-api/fastapi/${{ github.ref_name }}" >> $GITHUB_ENV
-          make _models;
-          make _database;
+          echo "GHCR_REPOSITORY=deuky/chift-api/django/${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -38,11 +35,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./app/fastapi
-          build-args: |
-            BASE_REF=${{ vars.BASE_REF }}
-          target: unit
-          file: ./app/fastapi/Dockerfile
+          context: ./app/django
+          target: base
+          file: ./app/django/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.VERSION }}
