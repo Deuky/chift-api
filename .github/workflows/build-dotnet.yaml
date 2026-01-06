@@ -6,7 +6,7 @@ on:
       - "**"
     paths:
       - app/.NET/**
-      - .github/workflows/build-dotnet.yml
+      - .github/workflows/build-dotnet.yaml
 
 jobs:
   build:
