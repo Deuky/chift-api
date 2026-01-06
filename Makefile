@@ -15,6 +15,7 @@ install: _secrets
 	cat postgresql/init.sql | docker compose exec -T postgres psql -U odoo $(ODOO_APP_NAME)
 	$(MAKE) waiting-mariadb
 	@cat mariadb/init.sql | docker compose exec -T mariadb mariadb -p'$(MARIADB_PASSWORD)'
+	docker compose run --rm django make install
 	docker compose down
 
 start:

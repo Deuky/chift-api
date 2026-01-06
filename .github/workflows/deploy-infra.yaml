@@ -58,7 +58,7 @@ jobs:
             cd /media/chift-api
             mkdir -p nginx/ssl
             htpasswd -b -c nginx/htpasswd admin password
-            
+
             cat << EOF | tr -d $'\r' > .env
             ${{ vars.ENV_FILE }}
             EOF
@@ -84,3 +84,4 @@ jobs:
             echo "${{ secrets.API_MARIADB_ROOT_PASS }}" > ${SECRET_DIR}/api_mariadb_root_pass
             echo "${{ secrets.ODOO_PG_PASS }}" > ${SECRET_DIR}/odoo_pg_pass
             make install
+            make start
