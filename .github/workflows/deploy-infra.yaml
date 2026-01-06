@@ -43,7 +43,7 @@ jobs:
           host: chift-api.gustin.page
           username: root
           key: ${{ secrets.DEPLOY_SSH }}
-          source: *
+          source: ./
           target: /media/chift-api
 
       - name: Deploy via SSH
