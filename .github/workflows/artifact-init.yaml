@@ -11,15 +11,6 @@ on:
       - docker-compose.yml
       - Makefile
       - .github/workflows/artifact-init.yaml
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Target environment"
-        required: true
-        default: "private"
-        type: choice
-        options:
-          - private
 
 jobs:
   build:
@@ -42,19 +33,3 @@ jobs:
             Makefile
             .github/workflows/artifact-init.yaml
 
-  deploy:
-    name: Deploy (manual only)
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app-package
-
-      - name: Deploy via SSH
-        run: |
-          ls -lat
-          echo "ok";
