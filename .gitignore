@@ -13,6 +13,8 @@
 !scheduling/**
 !template
 !template/**
+!nginx
+!nginx/**
 !docker-compose.yml
 !.gitignore
 !Makefile
@@ -23,3 +25,4 @@
 scheduling/**/models
 scheduling/**/database.py
 __pycache__
+nginx/htpasswd
