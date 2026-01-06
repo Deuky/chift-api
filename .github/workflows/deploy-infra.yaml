@@ -58,11 +58,27 @@ jobs:
             cd /media/chift-api
             mkdir -p nginx/ssl
             htpasswd -b -c nginx/htpasswd admin password
-            echo "${{ vars.ENV_FILE }}" | tr -d $'\r' > .env
-            echo "${{ vars.SCHEDULING_RULES }}" | tr -d $'\r' > ./scheduling/cron.d/crontab
-            echo "${{ vars.NGINX_CONF }}" | tr -d $'\r' > ./nginx/default.conf
-            echo "${{ secrets.SSL_FULLCHAIN }}" | tr -d $'\r' > ./nginx/ssl/fullchain.pem
-            echo "${{ secrets.SSL_PRIVATE_KEY }}" | tr -d $'\r' > ./nginx/ssl/privkey.pem
+            
+            cat << EOF | tr -d $'\r' > .env
+            ${{ vars.ENV_FILE }}
+            EOF
+
+            cat << EOF | tr -d $'\r' > ./scheduling/cron.d/crontab
+            ${{ vars.SCHEDULING_RULES }}
+            EOF
+
+            cat << EOF | tr -d $'\r' > ./nginx/default.conf
+            ${{ vars.NGINX_CONF }}
+            EOF
+
+            cat << EOF | tr -d $'\r' > ./nginx/ssl/fullchain.pem
+            ${{ secrets.SSL_FULLCHAIN }}
+            EOF
+
+            cat << EOF | tr -d $'\r' > ./nginx/ssl/privkey.pem
+            ${{ secrets.SSL_PRIVATE_KEY }}
+            EOF
+
             source .env
             mkdir ${SECRET_DIR}
             echo "${{ secrets.API_MARIADB_ROOT_PASS }}" > ${SECRET_DIR}/api_mariadb_root_pass
