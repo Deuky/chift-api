@@ -7,4 +7,5 @@ COPY requirements.txt Makefile .
 RUN make -C /data build
 COPY . .
 RUN make -C /data install
+COPY entrypoint.sh /
 CMD ["/entrypoint.sh"]
